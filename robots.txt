@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://deaths-at-the-grand-canyon.netlify.app/sitemap.xml

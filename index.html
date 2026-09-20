@@ -1,0 +1,99 @@
+<!doctype html>
+<html>
+<title></title>
+    <meta name="google-site-verification" content="b7XVluCDwVgWy7pJdQJlCpT58x4reDOinXZyWeZoyto" />
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-5M4Q8PHKV8"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'G-5M4Q8PHKV8');
+    </script>
+    <link rel="canonical" href="https://deaths-at-the-grand-canyon.netlify.app/" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Deaths at the Grand Canyon" />
+    <meta property="og:title" content="Deaths at the Grand Canyon" />
+    <meta property="og:description" content="A field-log map and sortable record of fatalities on Colorado's fourteeners, with a click-to-query heat map by peak." />
+    <meta property="og:url" content="https://deaths-at-the-grand-canyon.netlify.app/" />
+    <meta property="og:image" content="https://deaths-at-the-grand-canyon.netlify.app/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Deaths at the Grand Canyon -- a fatality record of the fourteeners" />
+    <meta property="og:locale" content="en_US" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Deaths at the Grand Canyon" />
+    <meta name="twitter:description" content="A field-log map and sortable record of fatalities on Colorado's fourteeners, with a click-to-query heat map by peak." />
+    <meta name="twitter:image" content="https://deaths-at-the-grand-canyon.netlify.app/og-image.png" />
+    <meta name="twitter:image:alt" content="Deaths at the Grand Canyon -- a fatality record of the fourteeners" />
+
+    <link rel="icon" href="favicon.ico" sizes="any" />
+    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="favicon-32x32.png" sizes="32x32" type="image/png" />
+    <link rel="icon" href="favicon-16x16.png" sizes="16x16" type="image/png" />
+    <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+    <link rel="manifest" href="manifest.webmanifest" />
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<nav class="topbar">
+  <div class="topbar__mark">
+    <svg viewBox="0 0 24 24" fill="none">
+      <path d="M2 20 L8 8 L12 14 L15 9 L22 20 Z" fill="#C97C4B" />
+    </svg>
+    Grand Canyon
+  </div>
+  <div class="topbar__stats">
+    <div>Entries <span id="statCount">—</span></div>
+    <div>Span <span id="statSpan">—</span></div>
+  </div>
+</nav>
+
+<header class="hero">
+  <svg class="hero__contour" viewBox="0 0 1000 300" preserveAspectRatio="none">
+    <path d="M0 250 Q 250 180 500 240 T 1000 220" stroke="#D9B77C" stroke-width="1" fill="none" />
+    <path d="M0 270 Q 250 210 500 260 T 1000 245" stroke="#D9B77C" stroke-width="1" fill="none" />
+    <path d="M0 290 Q 250 235 500 280 T 1000 268" stroke="#D9B77C" stroke-width="1" fill="none" />
+  </svg>
+  <div class="hero__inner">
+    <div class="eyebrow"><span class="line"></span> Field Log</div>
+    <h1>Grand Canyon<br>Incident Timeline</h1>
+    <p class="hero__sub">A running record of hiking and backcountry incidents in and around the canyon — rescues, injuries, search efforts, and closures — logged chronologically like layers of rock.</p>
+  </div>
+</header>
+
+<section class="heatmap-section">
+  <div class="section-head">
+    <h2>Fatalities by Year</h2>
+    <span class="rule"></span>
+  </div>
+  <div class="category-filter" id="categoryFilter">
+    <!-- chips render here -->
+  </div>
+  <div class="heatmap" id="heatmap">
+    <!-- year cells render here -->
+  </div>
+  <div class="heatmap-legend" id="heatmapLegend">
+    <!-- swatches render here, keyed off HEATMAP_SCALE -->
+  </div>
+  <div class="heatmap-summary" id="heatmapSummary"></div>
+</section>
+
+<main class="timeline-section">
+  <div class="section-head">
+    <h2>Logged Incidents</h2>
+    <span class="rule"></span>
+  </div>
+  <div class="strata" id="strata">
+    <!-- entries render here -->
+  </div>
+</main>
+
+<footer>Grand Canyon Incident Timeline · Field Log · Entries added as reported</footer>
+
+    <script type="module" src="script.js"></script>
+</body>
+</html>
