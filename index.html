@@ -1,98 +1,202 @@
 <!doctype html>
-<html>
-<title>Deaths at the Grand Canyon</title>
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-H672G2G1N6"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
+<html lang="en">
 
-  gtag('config', 'G-H672G2G1N6');
-</script>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Deaths at the Grand Canyon</title>
+    <meta name="title" content="Deaths at the Grand Canyon" />
+    <meta name="description" content="A sortable field-log record of fatalities at Grand Canyon National Park, 1919 to present, broken out by cause, decade, year, sex, and age band, with sources for every entry." />
+    <meta name="robots" content="index, follow" />
+    <meta name="language" content="English" />
+    <meta name="revisit-after" content="30 days" />
+
+    <link rel="icon" href="/favicon.ico" sizes="32x32">
+    <link rel="icon" href="/images/icon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+    <link rel="manifest" href="/manifest.webmanifest">
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-H672G2G1N6"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'G-H672G2G1N6');
+    </script>
     <link rel="canonical" href="https://deaths-at-the-grand-canyon.netlify.app/" />
-
+    <meta name="theme-color" content="#212121" />
+    <!-- Open Graph -->
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Deaths at the Grand Canyon" />
     <meta property="og:title" content="Deaths at the Grand Canyon" />
-    <meta property="og:description" content="A field-log map and sortable record of fatalities on Colorado's fourteeners, with a click-to-query heat map by peak." />
+    <meta property="og:description" content="A sortable field-log record of fatalities at Grand Canyon National Park, 1919 to present, with sources for every entry." />
     <meta property="og:url" content="https://deaths-at-the-grand-canyon.netlify.app/" />
-    <meta property="og:image" content="https://deaths-at-the-grand-canyon.netlify.app/og-image.png" />
+    <meta property="og:image" content="https://deaths-at-the-grand-canyon.netlify.app/images/og-image.jpg" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt" content="Deaths at the Grand Canyon -- a fatality record of the fourteeners" />
+    <meta property="og:image:alt" content="Deaths at the Grand Canyon -- a fatality record of Grand Canyon National Park" />
     <meta property="og:locale" content="en_US" />
-
+    <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Deaths at the Grand Canyon" />
-    <meta name="twitter:description" content="A field-log map and sortable record of fatalities on Colorado's fourteeners, with a click-to-query heat map by peak." />
-    <meta name="twitter:image" content="https://deaths-at-the-grand-canyon.netlify.app/og-image.png" />
-    <meta name="twitter:image:alt" content="Deaths at the Grand Canyon -- a fatality record of the fourteeners" />
+    <meta name="twitter:description" content="A sortable field-log record of fatalities at Grand Canyon National Park, 1919 to present, with sources for every entry." />
+    <meta name="twitter:image" content="https://deaths-at-the-grand-canyon.netlify.app/images/og-image.jpg" />
+    <meta name="twitter:image:alt" content="Deaths at the Grand Canyon -- a fatality record of Grand Canyon National Park" />
 
-    <link rel="icon" href="favicon.ico" sizes="any" />
-    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
-    <link rel="icon" href="favicon-32x32.png" sizes="32x32" type="image/png" />
-    <link rel="icon" href="favicon-16x16.png" sizes="16x16" type="image/png" />
-    <link rel="apple-touch-icon" href="apple-touch-icon.png" />
-    <link rel="manifest" href="manifest.webmanifest" />
-<link rel="stylesheet" href="style.css" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Dataset",
+        "name": "Deaths at the Grand Canyon",
+        "description": "A research register of reported fatalities at Grand Canyon National Park from 1919 to the present, broken out by cause, year, sex, and age band, with a source for every entry.",
+        "keywords": [
+          "Grand Canyon",
+          "Grand Canyon National Park",
+          "park fatalities",
+          "hiking deaths",
+          "Colorado River",
+          "heat illness",
+          "Field Log"
+        ],
+        "spatialCoverage": {
+          "@type": "Place",
+          "name": "Grand Canyon National Park, Arizona, United States",
+          "geo": {
+            "@type": "GeoShape",
+            "box": "35.70 -113.95 36.85 -111.60"
+          }
+        },
+        "variableMeasured": [
+          "Date",
+          "Cause of death",
+          "Location",
+          "Sex",
+          "Age band",
+          "Name"
+        ],
+        "url": "https://deaths-at-the-grand-canyon.netlify.app/"
+      }
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Public+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" />
+    <link rel="stylesheet" href="style.css" />
 </head>
+
 <body>
-<nav class="topbar">
-  <div class="topbar__mark">
-    <svg viewBox="0 0 24 24" fill="none">
-      <path d="M2 20 L8 8 L12 14 L15 9 L22 20 Z" fill="#C97C4B" />
-    </svg>
-    Grand Canyon
-  </div>
-  <div class="topbar__stats">
-    <div>Entries <span id="statCount">—</span></div>
-    <div>Span <span id="statSpan">—</span></div>
-  </div>
-</nav>
+    <div class="page-shell">
+        <aside class="peak-sidebar" aria-label="Browse by decade">
+            <div class="peak-sidebar-head">
+                <h2 class="peak-sidebar-title">Decades</h2>
+                <div class="peak-sort" role="group" aria-label="Sort decades">
+                    <button type="button" class="peak-sort-btn is-active" data-sort="chrono">Chronological</button>
+                    <button type="button" class="peak-sort-btn" data-sort="deadly">Most deadly</button>
+                </div>
+            </div>
+            <div class="peak-list" id="peakList"></div>
+        </aside>
 
-<header class="hero">
-  <svg class="hero__contour" viewBox="0 0 1000 300" preserveAspectRatio="none">
-    <path d="M0 250 Q 250 180 500 240 T 1000 220" stroke="#D9B77C" stroke-width="1" fill="none" />
-    <path d="M0 270 Q 250 210 500 260 T 1000 245" stroke="#D9B77C" stroke-width="1" fill="none" />
-    <path d="M0 290 Q 250 235 500 280 T 1000 268" stroke="#D9B77C" stroke-width="1" fill="none" />
-  </svg>
-  <div class="hero__inner">
-    <div class="eyebrow"><span class="line"></span> Field Log</div>
-    <h1>Grand Canyon<br>Incident Timeline</h1>
-    <p class="hero__sub">A running record of hiking and backcountry incidents in and around the canyon — rescues, injuries, search efforts, and closures — logged chronologically like layers of rock.</p>
-  </div>
-</header>
+        <div class="wrap">
+            <div class="peak-dropdown-wrap">
+                <label class="peak-dropdown-label" for="peakDropdown">Decades</label>
+                <select id="peakDropdown" class="peak-dropdown"></select>
+            </div>
 
-<section class="heatmap-section">
-  <div class="section-head">
-    <h2>Fatalities by Year</h2>
-    <span class="rule"></span>
-  </div>
-  <div class="category-filter" id="categoryFilter">
-    <!-- chips render here -->
-  </div>
-  <div class="heatmap" id="heatmap">
-    <!-- year cells render here -->
-  </div>
-  <div class="heatmap-legend" id="heatmapLegend">
-    <!-- swatches render here, keyed off HEATMAP_SCALE -->
-  </div>
-  <div class="heatmap-summary" id="heatmapSummary"></div>
-</section>
+            <header class="masthead">
+                <h1><div>Deaths at the <em>Grand Canyon</em></div></h1>
 
-<main class="timeline-section">
-  <div class="section-head">
-    <h2>Logged Incidents</h2>
-    <span class="rule"></span>
-  </div>
-  <div class="strata" id="strata">
-    <!-- entries render here -->
-  </div>
-</main>
+                <div class="panel masthead-sub">
+                    <p>Grand Canyon National Park draws millions of visitors a year — rim walkers, inner-canyon hikers, river runners, and people flying over it. Some of them don't come home, and the record of who died, and how, is scattered across park reports, newspapers, and old archives.</p>
+                    <p>Deaths at the Grand Canyon brings that record together, from 1919 to the present: falls from the rim, heat illness on the trails, drownings on the Colorado River, flash floods, aircraft disasters, and deaths whose cause was never established.</p>
+                    <p>Every entry cites its source. This is a research register, not an official census — older years mainly cover non-natural deaths, NPS records are anonymous, and some entries still need independent verification. See <a href="about.html">About</a> for the full scope and limits.</p>
+                </div>
 
-<footer>Grand Canyon Incident Timeline · Field Log · Entries added as reported</footer>
+                <div class="panel stat-panel">
+                    <div class="vslider-wrap">
+                        <div class="vslider" aria-roledescription="carousel" aria-label="Stats">
+                            <div class="vslider__viewport">
+                                <div class="vslider__track">
+                                    <article>
+                                        <p><strong><span class="stat-value" id="statEntries" data-stat="entries">—</span></strong><br />recorded deaths</p>
+                                    </article>
+                                    <article>
+                                        <p><strong><span class="stat-value" id="statSpan" data-stat="span">—</span></strong><br />recorded years</p>
+                                    </article>
+                                    <article>
+                                        <p><strong><span class="stat-value" id="statIncidents" data-stat="incidents">—</span></strong><br />separate incidents</p>
+                                    </article>
+                                    <article>
+                                        <p><strong><span class="stat-value" id="statCause" data-stat="cause" style="font-size: 16px">—</span></strong><br />most common cause</p>
+                                    </article>
+                                    <article>
+                                        <p><strong><span class="stat-value" id="statDeadliest" data-stat="deadliest" style="font-size: 16px">—</span></strong><br /><span id="statDeadliestSub" data-stat="deadliestSub">Deadliest incident</span></p>
+                                    </article>
+                                </div>
+                            </div>
+                        </div>
+                        <nav class="vslider__dots" aria-label="Slide navigation"></nav>
+                    </div>
+                </div>
+            </header>
 
+            <div class="selected" id="selectedPanel" hidden style="margin-top: 1em; margin-bottom: 1em;">
+                <h2 id="selectedName"></h2>
+            </div>
+
+            <section class="charts">
+                <div class="panel chart-card">
+                    <h2 class="panel-title" style="font-size: .8em">Cause</h2>
+                    <div class="bar-list" id="chartCause"></div>
+                </div>
+                <div class="panel chart-card">
+                    <h2 class="panel-title" style="font-size: .8em">Source</h2>
+                    <div class="bar-list" id="chartStatus"></div>
+                </div>
+                <div class="panel chart-card">
+                    <h2 class="panel-title" style="font-size: .8em">Age</h2>
+                    <div class="bar-list" id="chartAge"></div>
+                </div>
+                <div class="panel chart-card">
+                    <h2 class="panel-title" style="font-size: .8em">Sex</h2>
+                    <div class="bar-list" id="chartGender"></div>
+                </div>
+
+                <div class="panel year-card">
+                    <h2 class="panel-title" style="font-size: .8em">Fatalities by Year</h2>
+                    <div class="year-chart" id="chartYear"></div>
+                </div>
+            </section>
+
+            <section class="log">
+                <div class="log-toolbar">
+                    <h2 class="panel-title" style="font-size: 19px">Logged Incidents</h2>
+                    <span class="count-readout" id="countReadout">Loading…</span>
+                    <button class="clear-btn" id="clearBtn" disabled>Clear filter</button>
+                </div>
+                <div class="table-scroll">
+                    <table>
+                        <thead>
+                            <tr id="tableHead"></tr>
+                        </thead>
+                        <tbody id="tableBody"><tr class="status-row"><td colspan="6">Loading incidents…</td></tr></tbody>
+                    </table>
+                </div>
+                <div class="log-footer">
+                    <button type="button" class="show-more-btn" id="showMoreBtn" hidden>Show more</button>
+                </div>
+            </section>
+
+            <footer>
+                <span>
+                    Deaths at the Grand Canyon · entries as reported, <span id="footerSpan">—</span> · <a href="contact.html">Contact</a> · <a href="about.html">About</a>
+                </span>
+            </footer>
+        </div>
+    </div>
     <script type="module" src="script.js"></script>
+    <script type="module" src="slider.js"></script>
 </body>
+
 </html>

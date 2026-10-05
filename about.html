@@ -2,17 +2,117 @@
 <html lang="en">
 
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>About - Deaths at the Grand Canyon</title>
-    <meta name="robots" content="noindex">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>About — Deaths at the Grand Canyon</title>
+    <meta name="description" content="Scope, sources, and limits of the Deaths at the Grand Canyon register: what it covers, how records are categorized, and where the gaps are." />
+    <link rel="canonical" href="https://deaths-at-the-grand-canyon.netlify.app/about.html" />
+    <meta name="theme-color" content="#212121" />
+    <link rel="icon" href="/favicon.ico" sizes="32x32">
+    <link rel="icon" href="/images/icon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Public+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" />
+    <link rel="stylesheet" href="style.css" />
     <style>
+        .doc { max-width: 760px; margin: 0 auto; }
+        .doc-head { padding: 40px 0 24px; }
+        .doc-head h1 { display: block; margin: 0 0 12px; }
+        .back { font-family: var(--font-mono); font-size: 12px; letter-spacing: .06em; text-transform: uppercase; text-decoration: none; }
+        .back:hover { text-decoration: underline; }
+        .doc .panel { padding: 22px 26px; margin-bottom: 22px; }
+        .doc h2 { font-family: var(--font-display); font-weight: 600; font-size: 22px; margin: 0 0 10px; }
+        .doc p, .doc li { max-width: 66ch; }
+        .doc p { margin: 0 0 12px; }
+        .doc p:last-child { margin-bottom: 0; }
+        .doc ul { margin: 0 0 12px; padding-left: 1.2em; }
+        .doc li { margin-bottom: 6px; }
+        .doc dl { margin: 0; display: grid; grid-template-columns: max-content 1fr; gap: 8px 18px; }
+        .doc dt { font-family: var(--font-mono); font-size: 12.5px; color: var(--rust); padding-top: 2px; }
+        .doc dd { margin: 0; }
+        .callout { border-left: 3px solid var(--rust); padding-left: 14px; color: var(--ink-soft); font-style: italic; font-family: var(--font-display); font-size: 17px; }
+        .stat-inline { font-family: var(--font-mono); font-weight: 600; color: var(--ink); }
+        @media (max-width: 560px) {
+            .doc .panel { padding: 18px 16px; }
+            .doc dl { grid-template-columns: 1fr; gap: 2px; }
+            .doc dd { margin-bottom: 10px; }
+        }
     </style>
 </head>
 
 <body>
-    <div class="card">
-    <h1>About This Project</h1>
+    <div class="wrap">
+        <main class="doc">
+            <header class="doc-head">
+                <a class="back" href="index.html">&larr; Back to the register</a>
+                <h1>About this <em>project</em></h1>
+                <p class="lede">What the register covers, where the records come from, and what it can't tell you yet.</p>
+            </header>
+
+            <section class="panel">
+                <h2>What this is</h2>
+                <p>Deaths at the Grand Canyon is a research register of reported fatalities inside Grand Canyon National Park, from 1919 to the present. It pulls together records that are otherwise scattered across a historical map compilation, the National Park Service's mortality data, park news releases, and press reports.</p>
+                <p class="callout">It is an incomplete register, not a verified census of every death, and not a confirmed count of unique people.</p>
+            </section>
+
+            <section class="panel">
+                <h2>How to read the log</h2>
+                <ul>
+                    <li><strong>One row per person.</strong> Each row is a named person, or an unnamed victim a source counts but doesn't name. People who died in the same event share an incident, and the log groups them.</li>
+                    <li><strong>Blank means unknown.</strong> A missing month, day, or age means the source didn't give it. Sex is recorded only when a source states it; names are never used to guess.</li>
+                    <li><strong>Dates aren't always dates of death.</strong> Some sources give the day someone disappeared, was found, or was recovered. Each record notes which.</li>
+                    <li><strong>Every row cites a source.</strong> Expand a row to see the summary and the links behind it.</li>
+                </ul>
+            </section>
+
+            <section class="panel">
+                <h2>Cause categories</h2>
+                <dl>
+                    <dt>Aircraft / vehicle</dt><dd>Plane, helicopter, and motor vehicle crashes, including the 1956 midair collision.</dd>
+                    <dt>Fall</dt><dd>Accidental falls from the rim, trails, or cliffs.</dd>
+                    <dt>Intentional</dt><dd>Suicide and homicide, as reported.</dd>
+                    <dt>Cardiac / heat</dt><dd>Reported cardiac events, heat illness, dehydration, and exhaustion. This is a grouping, not a medical diagnosis.</dd>
+                    <dt>Drowning</dt><dd>Includes presumed drownings where remains were never found. A body recovered from water doesn't by itself count as a drowning.</dd>
+                    <dt>Other medical</dt><dd>Medical deaths where the source doesn't establish a cardiac cause.</dd>
+                    <dt>Flash flood</dt><dd>Deaths in flash floods and debris flows.</dd>
+                    <dt>Exposure, Rockfall, Lightning</dt><dd>Smaller categories, kept separate where the source is clear.</dd>
+                    <dt>Unknown</dt><dd>The cause was never established.</dd>
+                </dl>
+            </section>
+
+            <section class="panel">
+                <h2>Sources</h2>
+                <dl>
+                    <dt>Historical</dt><dd>Most pre-2007 records come from Kenneth Field's historical map of Grand Canyon deaths. Its newspaper and archive citations are treated as leads, not as documents reviewed here, and these entries still need independent verification. Map points are approximate, and some names in the map are misspelled.</dd>
+                    <dt>NPS record</dt><dd>Rows from the National Park Service's released mortality workbook (2007 onward). These are anonymous and use age ranges. Where one looks like it matches a named record, the match is a candidate, not a confirmed identification.</dd>
+                    <dt>Park / news</dt><dd>Park news releases and press reports, used for recent cases and to put names to anonymous records.</dd>
+                </dl>
+                <p style="margin-top:14px">The names of all 128 victims of the 1956 midair collision come from the family memorial lists for United Flight 718 and TWA Flight 2. Those lists give names only, so ages and sex are left blank.</p>
+            </section>
+
+            <section class="panel">
+                <h2>Known gaps</h2>
+                <ul>
+                    <li><strong>1919–2006.</strong> The historical map focuses on non-natural deaths. Natural and medical deaths, employee and resident deaths, and older archival cases are not comprehensively covered.</li>
+                    <li><strong>2007 onward.</strong> Before 2014 the NPS data concentrated on unintentional deaths. Data from 2020 on is provisional, and some source rows may duplicate one another.</li>
+                    <li><strong>2025.</strong> The park reports 11 fatalities for 2025. The itemized records here don't fully reconcile to that total yet, and missing deaths are never filled with invented people.</li>
+                    <li><strong>Boundaries.</strong> Historical locations are checked against the park's <em>current</em> boundary. Where the boundary stood at the time of each death hasn't been verified.</li>
+                    <li><strong>Absence isn't evidence.</strong> If a death isn't listed, that doesn't mean it didn't happen.</li>
+                </ul>
+                <p>Cases just outside the park, cases with uncertain boundaries or years, and possible duplicates are held in a separate review list. They are left out of this log until they're resolved, not discarded.</p>
+            </section>
+
+            <section class="panel">
+                <h2>Corrections</h2>
+                <p>If you have a correction, a better source, or information about someone listed here, please <a href="contact.html">get in touch</a>. Identities and exact ages are added only when a source supports them.</p>
+            </section>
+
+            <footer>
+                <span>Deaths at the Grand Canyon · <a href="index.html">Register</a> · <a href="contact.html">Contact</a></span>
+            </footer>
+        </main>
     </div>
 </body>
+
 </html>

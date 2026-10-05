@@ -1,381 +1,597 @@
-    const lenis = new Lenis({
-  orientation: "vertical",
-  //lerp: 0.1,
-  smooth: true,
-  autoRaf: true
-  //allowNestedScroll: true,
-});
-/* =========================================================
-     INCIDENT DATA
-     Add new entries to this array — that's it, nothing else
-     in this file needs to change.
+(async function () {
+	"use strict";
 
-     Fields:
-       date:     "YYYY-MM-DD" (used for sorting + display)
-       title:    short headline of the incident
-       location: trail / area name
-       type:     one of "rescue" | "injury" | "fatality" | "search" | "closure" | "other"
-                 (controls the marker/tag color)
-       deaths:   number of deaths (fatality entries only; defaults to 1 if omitted)
-       category: one of "fall" | "aviation" | "hike" | "natural" | "murder" | "unknown"
-                 (fatality entries only; drives the filter chips + category color)
-       cause:    short cause tag, e.g. "Fall", "Mid-air collision" (optional, fatality entries)
-       desc:     1-3 sentence summary
-     ========================================================= */
-const INCIDENTS = [
-  {
-    date: "2024-06-14",
-    title: "Heat exhaustion rescue near river",
-    location: "Bright Angel Trail",
-    type: "rescue",
-    desc:
-      "Hiker treated for heat exhaustion after ascending during peak afternoon heat; helicopter evacuation from Indian Garden."
-  },
-  {
-    date: "2023-08-02",
-    title: "Overdue hiker located after two-day search",
-    location: "Tonto Trail",
-    type: "search",
-    desc:
-      "Solo hiker reported overdue by family; located dehydrated but stable after a two-day ground and air search."
-  },
-  {
-    date: "2022-11-19",
-    title: "Trail closure following rockfall",
-    location: "South Kaibab Trail",
-    type: "closure",
-    desc:
-      "Section of trail closed for 48 hours after a rockfall damaged switchbacks near Cedar Ridge."
-  },
-  {
-    date: "2021-07-09",
-    title: "Ankle fracture on descent",
-    location: "Hermit Trail",
-    type: "injury",
-    desc:
-      "Hiker fractured an ankle on loose scree roughly three miles in; assisted out by park rescue team."
-  },
-  {
-    date: "2019-05-27",
-    title: "Fatality attributed to fall near rim",
-    location: "Near Mather Point",
-    type: "fatality",
-    deaths: 1,
-    category: "fall",
-    cause: "Fall",
-    desc:
-      "Visitor fell from an unprotected section of the rim while attempting a photograph. Reported by park officials."
-  },
-  {
-    date: "2018-02-10",
-    title: "Papillon Grand Canyon Helicopters crash",
-    location: "Quartermaster Canyon, Hualapai tribal land",
-    type: "fatality",
-    deaths: 5,
-    category: "aviation",
-    cause: "Helicopter crash",
-    desc:
-      "An Airbus EC130 B4 tour helicopter crashed and caught fire in a remote section of the canyon. Five British tourists died from the impact and subsequent fire."
-  },
-  {
-    date: "1991-05-13",
-    title: "Air Grand Canyon Cessna 207 crash",
-    location: "Forested area near the canyon",
-    type: "fatality",
-    deaths: 7,
-    category: "aviation",
-    cause: "Engine failure",
-    desc:
-      "A single-engine Cessna 207 tour plane suffered catastrophic engine failure and crashed into dense forest eight minutes after takeoff, killing the pilot and six passengers."
-  },
-  {
-    date: "1989-09-27",
-    title: "Grand Canyon Airlines Flight 5 crash",
-    location: "Grand Canyon National Park Airport",
-    type: "fatality",
-    deaths: 10,
-    category: "aviation",
-    cause: "Aborted landing",
-    desc:
-      "A De Havilland Twin Otter scenic tour plane crashed into a wooded hill during an aborted landing (go-around). Eight passengers and both crew members died."
-  },
-  {
-    date: "1986-06-18",
-    title: "Grand Canyon Airlines & Helitech mid-air collision",
-    location: "Near Crystal Rapids",
-    type: "fatality",
-    deaths: 25,
-    category: "aviation",
-    cause: "Mid-air collision",
-    desc:
-      "A De Havilland Twin Otter sightseeing plane and a Bell 206 helicopter collided mid-air during scenic tours. All 20 aboard the plane and all 5 aboard the helicopter were killed, prompting strict new rules on tour flight altitudes and corridors."
-  },
-  {
-    date: "1956-06-30",
-    title: "The Great Mid-Air Collision",
-    location:
-      "Confluence of the Colorado & Little Colorado, near Temple & Chuar Buttes",
-    type: "fatality",
-    deaths: 128,
-    category: "aviation",
-    cause: "Mid-air collision",
-    desc:
-      "TWA Flight 2 and United Airlines Flight 718 collided at 21,000 feet directly over the canyon after both pilots deviated from their routes for a better view of the landscape. Flying under visual rules in uncontrolled airspace, neither crew saw the other in time. The deadliest disaster in the park's history, it directly led Congress to establish the FAA and require radar control over commercial flights."
-  }
-];
+	/* ============ DATA ============
+	   records.json is generated from Grand_Canyon_Death_Register.xlsx
+	   (Records sheet) by build-records.py. Re-run that script after
+	   editing the spreadsheet -- nothing in this file needs to change. */
+	var MONTH_NUM = {
+		January: "01", February: "02", March: "03", April: "04",
+		May: "05", June: "06", July: "07", August: "08",
+		September: "09", October: "10", November: "11", December: "12"
+	};
 
-/* ========================================================= */
+	async function loadRecords() {
+		try {
+			var res = await fetch("records.json", { cache: "no-cache" });
+			if (res && res.ok) {
+				var json = await res.json();
+				if (Array.isArray(json)) return json;
+			}
+		} catch (e) {
+			/* fall through */
+		}
+		return [];
+	}
 
-const TYPE_COLORS = {
-  rescue: "#5B84A0",
-  injury: "#C97C4B",
-  fatality: "#4A3140",
-  search: "#6B7A5E",
-  closure: "#A6512C",
-  other: "#8a7a5c"
-};
+	document.documentElement.classList.add("is-loading");
+	var RECORDS = await loadRecords();
+	document.documentElement.classList.remove("is-loading");
 
-const CATEGORY_COLORS = {
-  fall: "#B5502C",
-  aviation: "#5B84A0",
-  hike: "#6B7A5E",
-  natural: "#7B5EA8",
-  murder: "#4A3140",
-  unknown: "#9C9080"
-};
-const CATEGORY_LABELS = {
-  fall: "Fall",
-  aviation: "Aviation",
-  hike: "Hiking",
-  natural: "Natural Causes",
-  murder: "Murder",
-  unknown: "Unknown"
-};
+	RECORDS.forEach(function (r) {
+		if (!r.gender) r.gender = "U";
+	});
 
-let activeCategory = "all";
+	/* ============ ORDERS / LABELS ============ */
+	var CAUSE_ORDER = [
+		"Aircraft / vehicle",
+		"Fall",
+		"Intentional",
+		"Cardiac / heat",
+		"Drowning",
+		"Other medical",
+		"Flash flood",
+		"Exposure",
+		"Rockfall",
+		"Lightning",
+		"Other",
+		"Unknown"
+	];
+	var STATUS_ORDER = ["Historical", "NPS record", "Park / news"];
+	var AGE_ORDER = ["0-14", "15-24", "25-34", "35-44", "45-54", "55-64", "65+"];
+	var GENDER_ORDER = ["M", "F", "U"];
+	var GENDER_LABEL = { M: "Male", F: "Female", U: "Unknown" };
 
-function formatDate(iso) {
-  const d = new Date(iso + "T00:00:00");
-  return d.toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "short",
-    day: "numeric"
-  });
-}
+	var YEAR_ORDER = Array.from(
+		new Set(
+			RECORDS.map(function (r) {
+				return r.year;
+			}).filter(Boolean)
+		)
+	).sort(function (a, b) {
+		return +a - +b;
+	});
 
-function renderCategoryFilter() {
-  const el = document.getElementById("categoryFilter");
-  const present = [
-    ...new Set(
-      INCIDENTS.filter((i) => i.type === "fatality" && i.category).map(
-        (i) => i.category
-      )
-    )
-  ];
-  const chips = ["all", ...present];
-  el.innerHTML = chips
-    .map((cat) => {
-      const isAll = cat === "all";
-      const color = isAll
-        ? "var(--plum)"
-        : CATEGORY_COLORS[cat] || CATEGORY_COLORS.unknown;
-      const label = isAll ? "All" : CATEGORY_LABELS[cat] || cat;
-      const activeClass = cat === activeCategory ? "is-active" : "";
-      return `<button class="category-chip ${activeClass}" style="--chip-color:${color}" data-category="${cat}">${label}</button>`;
-    })
-    .join("");
+	// Sidebar: one row per decade that has records.
+	var DECADES = Array.from(
+		new Set(
+			RECORDS.map(function (r) {
+				return r.decade;
+			}).filter(Boolean)
+		)
+	).sort();
+	var decadeCounts = {};
+	RECORDS.forEach(function (r) {
+		if (r.decade) decadeCounts[r.decade] = (decadeCounts[r.decade] || 0) + 1;
+	});
 
-  el.querySelectorAll(".category-chip").forEach((btn) => {
-    btn.addEventListener("click", () => {
-      activeCategory = btn.dataset.category;
-      renderCategoryFilter();
-      renderTimeline();
-      renderHeatmap();
-    });
-  });
-}
+	// Victims per incident, for the "one of N" note in each story.
+	var incidentSize = {};
+	RECORDS.forEach(function (r) {
+		incidentSize[r.incidentId] = (incidentSize[r.incidentId] || 0) + 1;
+	});
 
-function renderTimeline() {
-  const filtered = INCIDENTS.filter((item) => {
-    if (item.type !== "fatality") return true; // non-fatality entries always shown
-    if (activeCategory === "all") return true;
-    return item.category === activeCategory;
-  });
-  const sorted = [...filtered].sort(
-    (a, b) => new Date(b.date) - new Date(a.date)
-  );
-  const container = document.getElementById("strata");
-  container.innerHTML = sorted
-    .map((item) => {
-      const color = TYPE_COLORS[item.type] || TYPE_COLORS.other;
-      const isFatality = item.type === "fatality";
-      const deathBadge = isFatality
-        ? `<span class="stratum__deaths">${item.deaths || 1} ${
-            (item.deaths || 1) === 1 ? "death" : "deaths"
-          }</span>`
-        : "";
-      const catColor =
-        isFatality && item.category
-          ? CATEGORY_COLORS[item.category] || CATEGORY_COLORS.unknown
-          : null;
-      const categoryBadge = catColor
-        ? `<span class="stratum__category" style="--cat-color:${catColor}">${
-            CATEGORY_LABELS[item.category] || item.category
-          }</span>`
-        : "";
-      const causeTag =
-        isFatality && item.cause
-          ? `<span class="stratum__cause">${item.cause}</span>`
-          : "";
-      return `
-        <article class="stratum" style="--marker-color:${color}" data-year="${new Date(
-        item.date
-      ).getFullYear()}" data-type="${item.type}">
-          <div class="stratum__head">
-            <span class="stratum__date">${formatDate(item.date)}</span>
-            <span class="stratum__tags">${categoryBadge}${deathBadge}<span class="stratum__type">${
-        item.type
-      }</span></span>
-          </div>
-          <h3 class="stratum__title">${item.title}</h3>
-          <div class="stratum__location">${item.location} ${causeTag}</div>
-          <p class="stratum__desc">${item.desc}</p>
-        </article>
-      `;
-    })
-    .join("");
+	function escapeHtml(s) {
+		return String(s)
+			.replace(/&/g, "&amp;")
+			.replace(/</g, "&lt;")
+			.replace(/>/g, "&gt;")
+			.replace(/"/g, "&quot;")
+			.replace(/'/g, "&#39;");
+	}
 
-  // stats (reflect the full dataset, not the category filter)
-  document.getElementById("statCount").textContent = INCIDENTS.length;
-  if (INCIDENTS.length) {
-    const years = INCIDENTS.map((i) => new Date(i.date).getFullYear());
-    const min = Math.min(...years),
-      max = Math.max(...years);
-    document.getElementById("statSpan").textContent =
-      min === max ? min : min + "–" + max;
-  }
+	function formatDate(r) {
+		if (!r.year) return "—";
+		var mm = r.month && MONTH_NUM[r.month] ? MONTH_NUM[r.month] : "--";
+		var dd = r.day ? ("0" + r.day).slice(-2) : "--";
+		return mm + "/" + dd + "/" + r.year;
+	}
 
-  // reveal-on-scroll
-  const observer = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((e) => {
-        if (e.isIntersecting) {
-          e.target.classList.add("is-visible");
-          observer.unobserve(e.target);
-        }
-      });
-    },
-    { threshold: 0.15 }
-  );
-  document.querySelectorAll(".stratum").forEach((el) => observer.observe(el));
-}
+	function safeUrl(u) {
+		return /^https?:\/\//i.test(u || "") ? u : null;
+	}
 
-function renderHeatmap() {
-  const fatalities = INCIDENTS.filter(
-    (i) =>
-      i.type === "fatality" &&
-      (activeCategory === "all" || i.category === activeCategory)
-  );
-  const counts = document.getElementById("heatmap");
-  if (!fatalities.length) {
-    const label =
-      activeCategory === "all"
-        ? "fatalities"
-        : (CATEGORY_LABELS[activeCategory] || activeCategory).toLowerCase() +
-          " fatalities";
-    counts.innerHTML = `<p style="font-family:var(--font-mono); font-size:0.75rem; opacity:0.6;">No ${label} logged yet.</p>`;
-    document.getElementById("heatmapSummary").textContent = "";
-    return;
-  }
+	function linkLabel(u) {
+		try {
+			return new URL(u).hostname.replace(/^www\./, "");
+		} catch (e) {
+			return "source";
+		}
+	}
 
-  const years = fatalities.map((i) => new Date(i.date).getFullYear());
-  const minYear = Math.min(...years);
-  const maxYear = Math.max(...years, new Date().getFullYear());
+	function storyHTML(r) {
+		var headline = r.name || r.nameNote || "Unidentified";
+		var html = "<h3 class='story-headline'>" + escapeHtml(headline) + "</h3>";
+		if (r.summary) html += "<p>" + escapeHtml(r.summary) + "</p>";
 
-  const deathsByYear = {};
-  const incidentsByYear = {};
-  fatalities.forEach((i) => {
-    const y = new Date(i.date).getFullYear();
-    deathsByYear[y] = (deathsByYear[y] || 0) + (i.deaths || 1);
-    incidentsByYear[y] = (incidentsByYear[y] || 0) + 1;
-  });
+		var n = incidentSize[r.incidentId] || 1;
+		if (n > 1) {
+			html +=
+				"<p class='story-note'>One of " + n +
+				" people recorded in this incident. <button type='button' class='incident-link' data-incident='" +
+				escapeHtml(r.incidentId) + "'>Show all " + n + "</button></p>";
+		}
 
-  const totalDeaths = Object.values(deathsByYear).reduce((a, b) => a + b, 0);
+		var items = [];
+		function add(label, val) {
+			if (val) items.push("<li><strong>" + label + ":</strong> " + val + "</li>");
+		}
+		add("Location", r.location && escapeHtml(r.location));
+		add("Cause category", escapeHtml(r.causeCategory));
+		add("Reported cause", r.mechanism && escapeHtml(r.mechanism));
+		if (r.ageExact != null) add("Age", String(r.ageExact));
+		else if (r.ageRange) add("Age range", escapeHtml(r.ageRange));
+		add("Date basis", r.dateBasis && escapeHtml(r.dateBasis));
+		add("Record status", r.statusFull && escapeHtml(r.statusFull));
+		add("Park scope", r.scope && escapeHtml(r.scope));
+		add("Reference", r.sourceRef && escapeHtml(r.sourceRef));
+		add("Notes", r.notes && escapeHtml(r.notes));
+		var links = [r.sourceUrl, r.sourceUrl2]
+			.map(safeUrl)
+			.filter(Boolean)
+			.map(function (u) {
+				return (
+					"<a href='" + escapeHtml(u) +
+					"' target='_blank' rel='noopener noreferrer'>" +
+					escapeHtml(linkLabel(u)) + "</a>"
+				);
+			});
+		add("Source", links.join(" · "));
+		html += "<ul class='story-list'>" + items.join("") + "</ul>";
+		html += "<p class='story-id'>Record " + escapeHtml(r.recordId) + "</p>";
+		return html;
+	}
 
-  /* ---------------------------------------------------------
-       HEATMAP COLOR SCALE — edit the "color" values below to
-       swap in your own palette. Buckets and labels can also be
-       changed; "max" is the upper bound (inclusive) for that
-       bucket, use Infinity for the last one.
-       --------------------------------------------------------- */
-  const HEATMAP_SCALE = [
-    { max: 0, color: "#EFE3C8", label: "0" },
-    { max: 5, color: "#E3B88C", label: "1–5" },
-    { max: 10, color: "#D98F62", label: "6–10" },
-    { max: 20, color: "#C2673F", label: "11–20" },
-    { max: 50, color: "#8C4A32", label: "21–50" },
-    { max: Infinity, color: "#4A3140", label: "51+" }
-  ];
-  function colorFor(deaths) {
-    const bucket = HEATMAP_SCALE.find((b) => deaths <= b.max);
-    return bucket
-      ? bucket.color
-      : HEATMAP_SCALE[HEATMAP_SCALE.length - 1].color;
-  }
+	/* ============ MASTHEAD STATS ============ */
+	// slider.js clones each slide (minus ids) for its infinite loop, so
+	// stats are written to every element sharing the data-stat key.
+	function setStat(key, text) {
+		document.querySelectorAll('[data-stat="' + key + '"]').forEach(function (el) {
+			el.textContent = text;
+		});
+	}
+	(function updateStats() {
+		setStat("entries",
+			RECORDS.length.toLocaleString());
 
-  // render the legend from the same scale so it never drifts out of sync
-  document.getElementById("heatmapLegend").innerHTML = HEATMAP_SCALE.map(
-    (b) => `
-      <span class="heatmap-legend__item">
-        <span class="heatmap-legend__swatch" style="background:${b.color}"></span>
-        <span>${b.label}</span>
-      </span>
-    `
-  ).join("");
+		var years = YEAR_ORDER.map(Number);
+		var spanText = !years.length
+			? "—"
+			: years[0] === years[years.length - 1]
+				? String(years[0])
+				: years[0] + "–" + years[years.length - 1];
+		setStat("span", spanText);
+		document.getElementById("footerSpan").textContent = spanText;
 
-  let html = "";
-  for (let y = minYear; y <= maxYear; y++) {
-    const deaths = deathsByYear[y] || 0;
-    const incidentCount = incidentsByYear[y] || 0;
-    const clickable = deaths > 0;
-    const showLabel = y % 5 === 0 || deaths > 0;
-    const tooltip = deaths
-      ? `${y}: ${deaths} death${
-          deaths === 1 ? "" : "s"
-        } (${incidentCount} incident${incidentCount === 1 ? "" : "s"})`
-      : `${y}: no recorded fatalities`;
-    html += `
-        <div class="heatmap-cell" data-clickable="${clickable}" data-year="${y}" title="${tooltip}">
-          <div class="heatmap-cell__swatch" style="background:${colorFor(
-            deaths
-          )}"></div>
-          <div class="heatmap-cell__year">${showLabel ? y : ""}</div>
-        </div>
-      `;
-  }
-  counts.innerHTML = html;
+		setStat("incidents",
+			Object.keys(incidentSize).length.toLocaleString());
 
-  document.getElementById("heatmapSummary").innerHTML =
-    `${totalDeaths} total lives lost, ${minYear}–${maxYear}` +
-    `<br><span class="heatmap-context">Aviation incidents account for the majority of recorded deaths — most occurred before tour-flight altitude and corridor restrictions were established in the late 1980s and 1990s.</span>`;
+		var causeCounts = {};
+		RECORDS.forEach(function (r) {
+			causeCounts[r.cause] = (causeCounts[r.cause] || 0) + 1;
+		});
+		var topCause = Object.keys(causeCounts).sort(function (a, b) {
+			return causeCounts[b] - causeCounts[a];
+		})[0];
+		setStat("cause", topCause || "—");
 
-  counts.querySelectorAll('[data-clickable="true"]').forEach((cell) => {
-    cell.addEventListener("click", () => {
-      const year = cell.dataset.year;
-      const target = document.querySelector(
-        `.stratum[data-year="${year}"][data-type="fatality"]`
-      );
-      if (target) {
-        target.scrollIntoView({ behavior: "smooth", block: "center" });
-        target.style.outline = "2px solid var(--plum)";
-        setTimeout(() => {
-          target.style.outline = "none";
-        }, 1400);
-      }
-    });
-  });
-}
+		var bigId = Object.keys(incidentSize).sort(function (a, b) {
+			return incidentSize[b] - incidentSize[a];
+		})[0];
+		var big = RECORDS.find(function (r) {
+			return r.incidentId === bigId;
+		});
+		if (big) {
+			setStat("deadliest",
+				incidentSize[bigId] + " · " + big.year);
+			setStat("deadliestSub",
+				"Deadliest incident (" + big.cause.toLowerCase() + ")");
+		}
+	})();
 
-renderCategoryFilter();
-renderTimeline();
-renderHeatmap();
+	/* ============ STATE ============ */
+	// {dim:'decade'|'cause'|'status'|'age'|'gender'|'year'|'incidentId', value}
+	var filter = null;
+	var sortKey = "date";
+	var sortDir = 1;
+
+	function matches(r) {
+		if (!filter) return true;
+		return r[filter.dim] === filter.value;
+	}
+
+	function setFilter(dim, value) {
+		if (filter && filter.dim === dim && filter.value === value) filter = null;
+		else filter = { dim: dim, value: value };
+		renderAll();
+	}
+	function clearFilter() {
+		filter = null;
+		renderAll();
+	}
+
+	/* ============ DECADE SIDEBAR / MOBILE DROPDOWN ============ */
+	var decadeSort = "chrono"; // 'chrono' | 'deadly'
+
+	function onDecadeChoose(d) {
+		if (!d) {
+			clearFilter();
+			return;
+		}
+		setFilter("decade", d);
+		var panel = document.getElementById("selectedPanel");
+		if (panel && !panel.hidden) {
+			panel.scrollIntoView({ behavior: "smooth", block: "start" });
+		}
+	}
+
+	function sortedDecades() {
+		var list = DECADES.slice();
+		if (decadeSort === "deadly") {
+			list.sort(function (a, b) {
+				return decadeCounts[b] - decadeCounts[a] || a.localeCompare(b);
+			});
+		}
+		return list;
+	}
+
+	function decadeRowHTML(d) {
+		return (
+			'<div class="peak-item">' +
+			'<button type="button" class="peak-row" data-decade="' + d +
+			'" aria-expanded="false">' +
+			'<svg class="peak-icon" viewBox="0 0 16 14" width="14" height="12" aria-hidden="true" focusable="false"><path d="M1 3 H5 L6 7 H10 L11 11 H15 V13 H1 Z"></path></svg>' +
+			"<span class='peak-row-name'>" + d + "</span>" +
+			"<span class='peak-row-elev'>" + decadeCounts[d] + "</span>" +
+			"</button>" +
+			'<div class="peak-row-detail" data-decade="' + d + '" hidden></div>' +
+			"</div>"
+		);
+	}
+
+	function renderDecadeList() {
+		var list = sortedDecades();
+		var box = document.getElementById("peakList");
+		box.innerHTML = list.map(decadeRowHTML).join("");
+		box.querySelectorAll(".peak-row").forEach(function (row) {
+			row.addEventListener("click", function () {
+				onDecadeChoose(row.getAttribute("data-decade"));
+			});
+		});
+
+		var select = document.getElementById("peakDropdown");
+		select.innerHTML =
+			'<option value="">Browse by decade…</option>' +
+			list
+				.map(function (d) {
+					return (
+						"<option value='" + d + "'>" + d + " — " +
+						decadeCounts[d] + " recorded</option>"
+					);
+				})
+				.join("");
+
+		syncActiveStates();
+	}
+
+	document.querySelectorAll(".peak-sort-btn").forEach(function (btn) {
+		btn.addEventListener("click", function () {
+			if (btn.dataset.sort === decadeSort) return;
+			decadeSort = btn.dataset.sort;
+			document.querySelectorAll(".peak-sort-btn").forEach(function (b) {
+				b.classList.toggle("is-active", b === btn);
+			});
+			renderDecadeList();
+		});
+	});
+
+	document.getElementById("peakDropdown").addEventListener("change", function (e) {
+		onDecadeChoose(e.target.value);
+	});
+
+	function decadeDetailHTML(d) {
+		var rows = RECORDS.filter(function (r) {
+			return r.decade === d;
+		});
+		var causeCounts = {};
+		rows.forEach(function (r) {
+			causeCounts[r.cause] = (causeCounts[r.cause] || 0) + 1;
+		});
+		var html =
+			"<div class='peak-detail-summary'><b>" + rows.length +
+			"</b> recorded death" + (rows.length === 1 ? "" : "s") + "</div>";
+		html += "<div class='breakdown'>";
+		Object.keys(causeCounts)
+			.sort(function (a, b) {
+				return causeCounts[b] - causeCounts[a];
+			})
+			.forEach(function (c) {
+				html +=
+					"<div class='breakdown-row'><span class='cause-tag' data-cause='" +
+					escapeHtml(c) + "'>" + escapeHtml(c) + "</span><b>" +
+					causeCounts[c] + "</b></div>";
+			});
+		html += "</div>";
+		return html;
+	}
+
+	/* ============ CHARTS ============ */
+	function count(dim, value) {
+		return RECORDS.filter(function (r) {
+			return r[dim] === value;
+		}).length;
+	}
+
+	function buildBarChart(containerId, dim, order, labelFn) {
+		var el = document.getElementById(containerId);
+		el.innerHTML = "";
+		var counts = order.map(function (v) {
+			return count(dim, v);
+		});
+		var max = Math.max.apply(null, counts);
+		order.forEach(function (v, i) {
+			var c = counts[i];
+			if (!c) return;
+			var row = document.createElement("button");
+			row.className = "bar-row";
+			row.type = "button";
+			row.dataset.dim = dim;
+			row.dataset.value = v;
+			row.innerHTML =
+				"<span class='bar-label'>" + escapeHtml(labelFn ? labelFn(v) : v) + "</span>" +
+				"<span class='bar-track'><span class='bar-fill' style='width:" +
+				(max ? (c / max) * 100 : 0) + "%'></span></span>" +
+				"<span class='bar-count'>" + c + "</span>";
+			row.addEventListener("click", function () {
+				setFilter(dim, v);
+			});
+			el.appendChild(row);
+		});
+	}
+
+	function buildYearChart() {
+		var el = document.getElementById("chartYear");
+		el.innerHTML = "";
+		var inner = document.createElement("div");
+		inner.className = "year-chart-inner";
+		var counts = YEAR_ORDER.map(function (y) {
+			return count("year", y);
+		});
+		var max = Math.max.apply(null, counts);
+		YEAR_ORDER.forEach(function (y, i) {
+			var c = counts[i];
+			var col = document.createElement("div");
+			col.className = "year-col";
+			col.dataset.value = y;
+			col.title = y + ": " + c + " recorded";
+			col.innerHTML =
+				"<span class='year-bar-value'>" + c + "</span>" +
+				"<span class='year-bar' style='height:" + (max ? (c / max) * 100 : 0) + "%'></span>" +
+				"<span class='year-label'>" + y + "</span>";
+			col.addEventListener("click", function () {
+				setFilter("year", y);
+			});
+			inner.appendChild(col);
+		});
+		el.appendChild(inner);
+	}
+
+	/* ============ TABLE ============ */
+	var COLUMNS = [
+		{ key: "date", label: "Date", cls: "num" },
+		{ key: "name", label: "Name" },
+		{ key: "location", label: "Location" },
+		{ key: "cause", label: "Cause" },
+		{ key: "gender", label: "Sex" },
+		{ key: "age", label: "Age band" }
+	];
+
+	function buildTableHead() {
+		var head = document.getElementById("tableHead");
+		head.innerHTML = "";
+		COLUMNS.forEach(function (col) {
+			var th = document.createElement("th");
+			if (col.cls) th.className = col.cls;
+			var btn = document.createElement("button");
+			btn.innerHTML = col.label + " <span class='arrow'>▲</span>";
+			btn.addEventListener("click", function () {
+				if (sortKey === col.key) sortDir *= -1;
+				else {
+					sortKey = col.key;
+					sortDir = 1;
+				}
+				renderTable();
+				updateSortIndicators();
+			});
+			th.appendChild(btn);
+			head.appendChild(th);
+		});
+		updateSortIndicators();
+	}
+
+	function updateSortIndicators() {
+		var ths = document.querySelectorAll("#tableHead th");
+		COLUMNS.forEach(function (col, i) {
+			var th = ths[i];
+			th.classList.toggle("sorted", col.key === sortKey);
+			th.querySelector(".arrow").textContent = sortDir === 1 ? "▲" : "▼";
+		});
+	}
+
+	function sortValue(r, key) {
+		if (key === "date") {
+			var y = +r.year || 0;
+			var mm = r.month && MONTH_NUM[r.month] ? +MONTH_NUM[r.month] : 0;
+			var dd = r.day ? +r.day : 0;
+			return y * 10000 + mm * 100 + dd;
+		}
+		if (key === "age") return r.age ? AGE_ORDER.indexOf(r.age) : 99;
+		var v = r[key];
+		return v ? String(v).toLowerCase() : "￿";
+	}
+
+	// Render rows in chunks so the full 800+ row log doesn't block the page.
+	var PAGE = 100;
+	var visibleLimit = PAGE;
+
+	function renderTable() {
+		var rows = RECORDS.filter(matches).sort(function (a, b) {
+			var av = sortValue(a, sortKey),
+				bv = sortValue(b, sortKey);
+			if (av < bv) return -1 * sortDir;
+			if (av > bv) return 1 * sortDir;
+			return a.id - b.id;
+		});
+
+		var body = document.getElementById("tableBody");
+		body.innerHTML = "";
+		var frag = document.createDocumentFragment();
+
+		rows.slice(0, visibleLimit).forEach(function (r) {
+			var tr = document.createElement("tr");
+			tr.className = "has-story";
+			if (filter) tr.classList.add("is-match");
+			tr.innerHTML =
+				"<td class='num'>" + formatDate(r) + "</td>" +
+				"<td>" +
+				(r.name ? escapeHtml(r.name) : "<span class='muted-cell'>Unidentified</span>") +
+				" <span class='chevron'>▸</span></td>" +
+				"<td class='loc-cell'>" +
+				(r.location ? escapeHtml(r.location) : "<span class='muted-cell'>—</span>") +
+				"</td>" +
+				"<td><span class='cause-tag' data-cause='" + escapeHtml(r.cause) + "'>" +
+				escapeHtml(r.cause) + "</span></td>" +
+				"<td>" + GENDER_LABEL[r.gender] + "</td>" +
+				"<td>" + (r.age || "<span class='muted-cell'>—</span>") + "</td>";
+			frag.appendChild(tr);
+
+			var storyTr = document.createElement("tr");
+			storyTr.className = "story-row";
+			storyTr.hidden = true;
+			var td = document.createElement("td");
+			td.colSpan = COLUMNS.length;
+			storyTr.appendChild(td);
+			frag.appendChild(storyTr);
+
+			tr.addEventListener("click", function () {
+				var willOpen = storyTr.hidden;
+				if (willOpen && !td.firstChild) {
+					td.innerHTML = "<div class='story-body'>" + storyHTML(r) + "</div>";
+					var link = td.querySelector(".incident-link");
+					if (link) {
+						link.addEventListener("click", function (e) {
+							e.stopPropagation();
+							setFilter("incidentId", r.incidentId);
+							document.querySelector(".log").scrollIntoView({ behavior: "smooth", block: "start" });
+						});
+					}
+				}
+				storyTr.hidden = !willOpen;
+				tr.classList.toggle("expanded", willOpen);
+			});
+		});
+		body.appendChild(frag);
+
+		if (!RECORDS.length) {
+			body.innerHTML =
+				"<tr class='status-row'><td colspan='" + COLUMNS.length +
+				"'>Incident data couldn't be loaded right now. Please try again shortly.</td></tr>";
+		}
+
+		var more = document.getElementById("showMoreBtn");
+		var remaining = rows.length - Math.min(visibleLimit, rows.length);
+		more.hidden = remaining <= 0;
+		more.textContent = "Show " + Math.min(PAGE, remaining) + " more (" + remaining + " remaining)";
+
+		document.getElementById("countReadout").textContent =
+			"Showing " + Math.min(visibleLimit, rows.length) + " of " + rows.length +
+			(filter ? " matching (" + RECORDS.length + " total)" : "");
+		document.getElementById("clearBtn").disabled = !filter;
+	}
+
+	document.getElementById("clearBtn").addEventListener("click", clearFilter);
+	document.getElementById("showMoreBtn").addEventListener("click", function () {
+		visibleLimit += PAGE;
+		renderTable();
+	});
+
+	/* ============ ACTIVE-STATE SYNC ============ */
+	var FILTER_LABEL = {
+		decade: function (v) { return v; },
+		year: function (v) { return v; },
+		cause: function (v) { return v; },
+		status: function (v) { return "Source: " + v; },
+		age: function (v) { return "Age " + v; },
+		gender: function (v) { return GENDER_LABEL[v]; },
+		incidentId: function (v) {
+			var r = RECORDS.find(function (x) { return x.incidentId === v; });
+			return r ? "Incident · " + formatDate(r) + (r.location ? " · " + r.location : "") : "Incident";
+		}
+	};
+
+	function syncActiveStates() {
+		document.querySelectorAll(".bar-row").forEach(function (row) {
+			row.classList.remove("is-active", "is-dim");
+			if (!filter || filter.dim !== row.dataset.dim) return;
+			row.classList.add(filter.value === row.dataset.value ? "is-active" : "is-dim");
+		});
+
+		document.querySelectorAll(".year-col").forEach(function (col) {
+			col.classList.remove("is-active", "is-dim");
+			if (!filter || filter.dim !== "year") return;
+			col.classList.add(filter.value === col.dataset.value ? "is-active" : "is-dim");
+		});
+
+		document.querySelectorAll(".peak-row").forEach(function (row) {
+			var d = row.getAttribute("data-decade");
+			var isActive = !!filter && filter.dim === "decade" && filter.value === d;
+			row.classList.toggle("is-active", isActive);
+			row.setAttribute("aria-expanded", isActive ? "true" : "false");
+		});
+		var dropdown = document.getElementById("peakDropdown");
+		if (dropdown) dropdown.value = filter && filter.dim === "decade" ? filter.value : "";
+
+		document.querySelectorAll(".peak-row-detail").forEach(function (box) {
+			var d = box.getAttribute("data-decade");
+			var isActive = !!filter && filter.dim === "decade" && filter.value === d;
+			box.hidden = !isActive;
+			box.innerHTML = isActive ? decadeDetailHTML(d) : "";
+		});
+
+		var panel = document.getElementById("selectedPanel");
+		var heading = document.getElementById("selectedName");
+		panel.hidden = !filter;
+		heading.textContent = filter ? FILTER_LABEL[filter.dim](filter.value) : "";
+	}
+
+	function buildCharts() {
+		buildBarChart("chartCause", "cause", CAUSE_ORDER);
+		buildBarChart("chartStatus", "status", STATUS_ORDER);
+		buildBarChart("chartAge", "age", AGE_ORDER);
+		buildBarChart("chartGender", "gender", GENDER_ORDER, function (v) {
+			return GENDER_LABEL[v];
+		});
+		buildYearChart();
+	}
+
+	function renderAll() {
+		visibleLimit = PAGE;
+		renderTable();
+		syncActiveStates();
+	}
+
+	buildCharts();
+	buildTableHead();
+	renderDecadeList();
+	renderAll();
+})();
