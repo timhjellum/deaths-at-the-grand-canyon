@@ -526,28 +526,28 @@ document.querySelector(".day-night input").addEventListener("change", () => {
       tr.className = "has-story";
       if (filter) tr.classList.add("is-match");
       tr.innerHTML =
-        "<td class='num'>" +
+        "<th scope='row' class='num' data-title='Date'>" +
         formatDate(r) +
-        "</td>" +
-        "<td>" +
+        "</th>" +
+        "<td data-title='Name'>" +
         (r.name
           ? escapeHtml(r.name)
           : "<span class='muted-cell'>Unidentified</span>") +
         " <span class='chevron'>▸</span></td>" +
-        "<td class='loc-cell'>" +
+        "<td data-title='Location' class='loc-cell'>" +
         (r.location
           ? escapeHtml(r.location)
           : "<span class='muted-cell'>—</span>") +
         "</td>" +
-        "<td><span class='cause-tag' data-cause='" +
+        "<td data-title='Cause'><span class='cause-tag' data-cause='" +
         escapeHtml(r.cause) +
         "'>" +
         escapeHtml(r.cause) +
         "</span></td>" +
-        "<td>" +
+        "<td data-title='Sex'>" +
         GENDER_LABEL[r.gender] +
         "</td>" +
-        "<td>" +
+        "<td data-title='Age'>" +
         (r.age || "<span class='muted-cell'>—</span>") +
         "</td>";
       frag.appendChild(tr);
