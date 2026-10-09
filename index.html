@@ -12,8 +12,8 @@
     <meta name="revisit-after" content="30 days" />
 
     <link rel="icon" href="/favicon.ico" sizes="32x32">
-    <link rel="icon" href="/images/icon.svg" type="image/svg+xml">
-    <link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+    <link rel="icon" href="icon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
     <link rel="manifest" href="/manifest.webmanifest">
 
     <!-- Google tag (gtag.js) -->
@@ -79,15 +79,20 @@
         "url": "https://deaths-at-the-grand-canyon.netlify.app/"
       }
     </script>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Public+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" />
-    <link rel="stylesheet" href="style.css" />
 </head>
 
 <body>
-    <div class="page-shell">
-        <aside class="peak-sidebar" aria-label="Browse by decade">
+<label class="day-night">
+  <input type="checkbox" checked />
+  <div></div>
+</label>
+
+<div class="page-shell">
+  <header class="hero">
+    <img src="/grand-canyon.png" alt="" />
+    <div></div>
+  </header>
+  <div class="panel peak-sidebar" aria-label="Browse by decade">
             <div class="peak-sidebar-head">
                 <h2 class="peak-sidebar-title">Decades</h2>
                 <div class="peak-sort" role="group" aria-label="Sort decades">
@@ -96,107 +101,122 @@
                 </div>
             </div>
             <div class="peak-list" id="peakList"></div>
-        </aside>
+  </div>
 
         <div class="wrap">
-            <div class="peak-dropdown-wrap">
+    <div class="panel peak-dropdown-wrap">
                 <label class="peak-dropdown-label" for="peakDropdown">Decades</label>
                 <select id="peakDropdown" class="peak-dropdown"></select>
             </div>
+    <div class="container">
+      <div class="item-0 panel">
 
-            <header class="masthead">
-                <h1><div>Deaths at the <em>Grand Canyon</em></div></h1>
-
-                <div class="panel masthead-sub">
+                <!--div class="panel masthead-sub">
                     <p>Grand Canyon National Park draws millions of visitors a year — rim walkers, inner-canyon hikers, river runners, and people flying over it. Some of them don't come home, and the record of who died, and how, is scattered across park reports, newspapers, and old archives.</p>
                     <p>Deaths at the Grand Canyon brings that record together, from 1919 to the present: falls from the rim, heat illness on the trails, drownings on the Colorado River, flash floods, aircraft disasters, and deaths whose cause was never established.</p>
                     <p>Every entry cites its source. This is a research register, not an official census — older years mainly cover non-natural deaths, NPS records are anonymous, and some entries still need independent verification. See <a href="about.html">About</a> for the full scope and limits.</p>
-                </div>
-
-                <div class="panel stat-panel">
-                    <div class="vslider-wrap">
-                        <div class="vslider" aria-roledescription="carousel" aria-label="Stats">
-                            <div class="vslider__viewport">
-                                <div class="vslider__track">
-                                    <article>
-                                        <p><strong><span class="stat-value" id="statEntries" data-stat="entries">—</span></strong><br />recorded deaths</p>
-                                    </article>
-                                    <article>
-                                        <p><strong><span class="stat-value" id="statSpan" data-stat="span">—</span></strong><br />recorded years</p>
-                                    </article>
-                                    <article>
-                                        <p><strong><span class="stat-value" id="statIncidents" data-stat="incidents">—</span></strong><br />separate incidents</p>
-                                    </article>
-                                    <article>
-                                        <p><strong><span class="stat-value" id="statCause" data-stat="cause" style="font-size: 16px">—</span></strong><br />most common cause</p>
-                                    </article>
-                                    <article>
-                                        <p><strong><span class="stat-value" id="statDeadliest" data-stat="deadliest" style="font-size: 16px">—</span></strong><br /><span id="statDeadliestSub" data-stat="deadliestSub">Deadliest incident</span></p>
-                                    </article>
+                </div-->
+        <span class="stat-value" id="statEntries" data-stat="entries">
+          —
+        </span>
+        <br />
+        recorded deaths
                                 </div>
+      <div class="item-1 panel">
+        <span class="stat-value" id="statSpan" data-stat="span">—</span>
+        <br />
+        recorded years
                             </div>
+      <div class="item-2 panel">
+        <span class="stat-value" id="statIncidents" data-stat="incidents">
+          —
+        </span>
+        <br />
+        separate incidents
                         </div>
-                        <nav class="vslider__dots" aria-label="Slide navigation"></nav>
+      <div class="item-3 panel">
+        <span class="stat-value" id="statCause" data-stat="cause">—</span>
+        <br />
+        most common cause
+      </div>
+      <div class="item-4 panel">
+        <span class="stat-value" id="statDeadliest" data-stat="deadliest">
+          —
+        </span>
+        <br />
+        <span id="statDeadliestSub" data-stat="deadliestSub">
+          Deadliest incident
+        </span>
                     </div>
                 </div>
-            </header>
 
             <div class="selected" id="selectedPanel" hidden style="margin-top: 1em; margin-bottom: 1em;">
                 <h2 id="selectedName"></h2>
             </div>
 
             <section class="charts">
-                <div class="panel chart-card">
-                    <h2 class="panel-title" style="font-size: .8em">Cause</h2>
+      <div class="panel chart-panel cause">
+        <h2 class="panel-title" style="font-size: 0.8em">Cause</h2>
                     <div class="bar-list" id="chartCause"></div>
                 </div>
-                <div class="panel chart-card">
-                    <h2 class="panel-title" style="font-size: .8em">Source</h2>
-                    <div class="bar-list" id="chartStatus"></div>
-                </div>
-                <div class="panel chart-card">
-                    <h2 class="panel-title" style="font-size: .8em">Age</h2>
+      <div class="panel chart-panel age">
+        <h2 class="panel-title" style="font-size: 0.8em">Age</h2>
                     <div class="bar-list" id="chartAge"></div>
                 </div>
-                <div class="panel chart-card">
-                    <h2 class="panel-title" style="font-size: .8em">Sex</h2>
+      <div class="panel chart-panel sex">
+        <h2 class="panel-title" style="font-size: 0.8em">Sex</h2>
                     <div class="bar-list" id="chartGender"></div>
                 </div>
 
-                <div class="panel year-card">
-                    <h2 class="panel-title" style="font-size: .8em">Fatalities by Year</h2>
+      <div class="panel year-panel">
+        <h2 class="panel-title" style="font-size: 0.8em">
+          Fatalities by Year</h2>
                     <div class="year-chart" id="chartYear"></div>
                 </div>
             </section>
 
-            <section class="log">
+    <section class="panel log">
                 <div class="log-toolbar">
-                    <h2 class="panel-title" style="font-size: 19px">Logged Incidents</h2>
+        <h2 class="panel-title">Logged Incidents</h2>
                     <span class="count-readout" id="countReadout">Loading…</span>
-                    <button class="clear-btn" id="clearBtn" disabled>Clear filter</button>
+<button class="clear-btn" id="clearBtn" disabled>Clear filter</button>
                 </div>
                 <div class="table-scroll">
                     <table>
                         <thead>
                             <tr id="tableHead"></tr>
                         </thead>
-                        <tbody id="tableBody"><tr class="status-row"><td colspan="6">Loading incidents…</td></tr></tbody>
+          <tbody id="tableBody">
+            <tr class="status-row">
+              <td colspan="6">Loading incidents…</td>
+            </tr>
+          </tbody>
                     </table>
                 </div>
                 <div class="log-footer">
-                    <button type="button" class="show-more-btn" id="showMoreBtn" hidden>Show more</button>
+        <button type="button" class="show-more-btn" id="showMoreBtn" hidden>
+          Show more
+        </button>
                 </div>
             </section>
 
             <footer>
                 <span>
-                    Deaths at the Grand Canyon · entries as reported, <span id="footerSpan">—</span> · <a href="contact.html">Contact</a> · <a href="about.html">About</a>
+        Deaths at the Grand Canyon · entries as reported,
+        <span id="footerSpan">—</span>
+        ·
+        <a href="contact.html">Contact</a>
+        ·
+        <a href="about.html">About</a>
                 </span>
-            </footer>
+
+      <div class="panel chart-panel">
+        <h2 class="panel-title" style="font-size: 0.8em">Source</h2>
+        <div class="bar-list" id="chartStatus"></div>
         </div>
-    </div>
-    <script type="module" src="script.js"></script>
-    <script type="module" src="slider.js"></script>
+    </footer>
+  </div>
+</div>
 </body>
 
 </html>
