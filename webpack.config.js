@@ -13,7 +13,10 @@ const stylesHandler = isProduction ? MiniCssExtractPlugin.loader : 'style-loader
 
 
 const config = {
-	entry: './script.js',
+	entry: {
+		main: './script.js',
+		pages: './pages.js',
+	},
 	output: {
 		path: path.resolve(__dirname, 'dist'),
 	},
@@ -25,6 +28,18 @@ const config = {
 	plugins: [
 		new HtmlWebpackPlugin({
 			template: 'index.html',
+			filename: 'index.html',
+			chunks: ['main'],
+		}),
+		new HtmlWebpackPlugin({
+			template: 'about.html',
+			filename: 'about.html',
+			chunks: ['pages'],
+		}),
+		new HtmlWebpackPlugin({
+			template: 'contact.html',
+			filename: 'contact.html',
+			chunks: ['pages'],
 		}),
 	],
 	module: {

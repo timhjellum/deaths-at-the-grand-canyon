@@ -1,4 +1,5 @@
 import './src/style.css';
+import "./src/scripts/day-night.js";
 import "./src/scripts/script.js";
 
 import './src/images/grand-canyon.png';
