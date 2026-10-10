@@ -188,7 +188,8 @@
       ? String(years[0])
       : years[0] + "–" + years[years.length - 1];
     setStat("span", spanText);
-    document.getElementById("footerSpan").textContent = spanText;
+    var footerSpan = document.getElementById("footerSpan"); // optional
+    if (footerSpan) footerSpan.textContent = spanText;
 
     setStat("incidents", Object.keys(incidentSize).length.toLocaleString());
 
