@@ -433,7 +433,175 @@
       inner.appendChild(col);
     });
     el.appendChild(inner);
+    yearPager.refresh();
   }
+
+  /* ============ YEAR CHART PAGER ============ */
+  // Ported from the 14ers site. Shows as many year columns as fit
+  // #chartYear's width and pages through the rest with the arrows, the
+  // arrow keys (Home/End jump to the ends) or a swipe. Opens on the most
+  // recent years. Rebuilding the chart or resizing keeps the same years
+  // in view.
+  var yearPager = (function () {
+    var chart = document.getElementById("chartYear");
+    var pager = document.getElementById("yearPager");
+    var prevBtn = document.getElementById("yearPrev");
+    var nextBtn = document.getElementById("yearNext");
+    var rangeEl = document.getElementById("yearRange");
+    if (!chart || !pager || !prevBtn || !nextBtn || !rangeEl) {
+      return { refresh: function () {} };
+    }
+
+    var BASE_GAP = 8; // matches .year-chart-inner gap in style.less
+    var start = null; // first visible column; null = latest page
+    var perPage = 1;
+    var anchorYear = null; // right-most visible year; null = latest page
+
+    function inner() {
+      return chart.querySelector(".year-chart-inner");
+    }
+    function cols() {
+      var row = inner();
+      return row ? row.children : [];
+    }
+
+    function measure() {
+      var row = inner(),
+        list = cols();
+      if (!row || !list.length) return false;
+      // widest column (a long label can stretch one past its 34px basis)
+      var colW = 0;
+      Array.prototype.forEach.call(list, function (c) {
+        colW = Math.max(colW, c.getBoundingClientRect().width);
+      });
+      var viewW = chart.clientWidth;
+      perPage = Math.max(1, Math.floor((viewW + BASE_GAP) / (colW + BASE_GAP)));
+      perPage = Math.min(perPage, list.length);
+      // Spread the leftover width into the gaps so a page fills the
+      // chart exactly, with no half-cut bar at the right edge.
+      var gap = perPage > 1 ? (viewW - perPage * colW) / (perPage - 1) : 0;
+      if (perPage === list.length) gap = BASE_GAP; // everything fits
+      row.style.gap = gap + "px";
+      return true;
+    }
+
+    function render(animate) {
+      var row = inner(),
+        list = cols();
+      var n = list.length;
+      var maxStart = Math.max(0, n - perPage);
+      if (start === null || start > maxStart) start = maxStart;
+      if (start < 0) start = 0;
+
+      // Slide to the real position of the first visible column
+      // (avoids sub-pixel drift from fractional gaps).
+      var offset =
+        list[start].getBoundingClientRect().left -
+        row.getBoundingClientRect().left;
+      if (!animate) row.style.transition = "none";
+      row.style.transform = "translateX(" + -offset + "px)";
+      if (!animate) {
+        void row.offsetWidth;
+        row.style.transition = "";
+      }
+
+      var first = list[start],
+        last = list[Math.min(n, start + perPage) - 1];
+      anchorYear = start >= maxStart ? null : +last.dataset.value;
+      rangeEl.textContent =
+        first.dataset.value === last.dataset.value
+          ? first.dataset.value
+          : first.dataset.value + "–" + last.dataset.value;
+      prevBtn.disabled = start <= 0;
+      nextBtn.disabled = start >= maxStart;
+      pager.hidden = n <= perPage;
+
+      Array.prototype.forEach.call(list, function (c, i) {
+        var visible = i >= start && i < start + perPage;
+        c.setAttribute("aria-hidden", visible ? "false" : "true");
+      });
+    }
+
+    function go(delta) {
+      var maxStart = Math.max(0, cols().length - perPage);
+      start = Math.max(0, Math.min(maxStart, (start || 0) + delta));
+      render(true);
+    }
+
+    // Call after the chart is rebuilt. Keeps the same right-hand year
+    // in view (or the nearest earlier one), or stays on the latest page.
+    function refresh() {
+      if (!measure()) return;
+      if (anchorYear !== null) {
+        var list = cols(),
+          idx = 0;
+        for (var i = 0; i < list.length; i++) {
+          if (+list[i].dataset.value <= anchorYear) idx = i;
+        }
+        start = Math.max(0, idx - perPage + 1);
+      } else {
+        start = null;
+      }
+      render(false);
+    }
+
+    prevBtn.addEventListener("click", function () {
+      go(-perPage);
+    });
+    nextBtn.addEventListener("click", function () {
+      go(perPage);
+    });
+
+    chart.addEventListener("keydown", function (e) {
+      if (e.key === "ArrowLeft") go(-perPage);
+      else if (e.key === "ArrowRight") go(perPage);
+      else if (e.key === "Home") go(-Infinity);
+      else if (e.key === "End") go(Infinity);
+      else return;
+      e.preventDefault();
+    });
+
+    // Swipe on touch screens (a swipe never counts as a bar click)
+    var downX = null;
+    chart.addEventListener("pointerdown", function (e) {
+      downX = e.clientX;
+    });
+    chart.addEventListener("pointerup", function (e) {
+      if (downX === null) return;
+      var dx = e.clientX - downX;
+      downX = null;
+      if (Math.abs(dx) > 40) {
+        chart.dataset.swiped = "1";
+        go(dx < 0 ? perPage : -perPage);
+      }
+    });
+    chart.addEventListener("pointercancel", function () {
+      downX = null;
+    });
+    chart.addEventListener(
+      "click",
+      function (e) {
+        if (chart.dataset.swiped) {
+          e.stopPropagation();
+          delete chart.dataset.swiped;
+        }
+      },
+      true
+    );
+
+    // Re-measure when the panel changes width, keeping the right-hand
+    // year in view.
+    if ("ResizeObserver" in window) {
+      var lastW = 0;
+      new ResizeObserver(function () {
+        if (chart.clientWidth === lastW) return;
+        lastW = chart.clientWidth;
+        refresh();
+      }).observe(chart);
+    }
+
+    return { refresh: refresh };
+  })();
 
   /* ============ TABLE ============ */
   var COLUMNS = [

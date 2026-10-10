@@ -1057,21 +1057,91 @@ footer {
   min-width: 0;
 }
 
+
+.year-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+/* Year pager (ported from the 14ers site): the arrows and range label
+	beside "Fatalities by Year". Colors use this site's panel tokens so
+	they follow the day/night toggle.
+	The chart shows as many years as fit its width; the arrows page
+	through the rest (see yearPager in script.js). */
+.year-pager {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.year-pager[hidden] {
+  display: none;
+}
+
+.year-pager-btn {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 1px solid var(--panel-icon-border-color);
+  border-radius: 50%;
+  background: var(--panel-icon-background-color);
+  color: var(--panel-icon-color);
+  cursor: pointer;
+  transition:
+    border-color 0.15s ease,
+    color 0.15s ease,
+    opacity 0.15s ease;
+}
+
+.year-pager-btn:hover:not(:disabled) {
+  border-color: var(--rust);
+  color: var(--rust);
+}
+
+.year-pager-btn:focus-visible {
+  outline: 2px solid var(--rust);
+  outline-offset: 2px;
+}
+
+.year-pager-btn:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+
+.year-pager-btn svg {
+  width: 14px;
+  height: 14px;
+}
+
+.year-pager-range {
+  min-width: 92px;
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-color);
+}
+
 .year-chart {
   height: 150px;
   margin-top: 16px;
-  padding: 0 4px 10px;
-  /* With 50+ distinct years the bars no longer fit any fixed
-		width -- rather than squeezing every column down to
-		illegibility, give the chart its own horizontal scroller
-		(same pattern as .table-scroll below) and let each column
-		keep a fixed, readable width from mobile through desktop.
-		The actual flex row + baseline live on .year-chart-inner so
-		the baseline scrolls together with the bars instead of
-		staying pinned to the (clipped) outer viewport. */
-  overflow-x: auto;
-  overflow-y: hidden;
-  -webkit-overflow-scrolling: touch;
+  padding: 0 0 10px;
+  /* A fixed window onto the year columns: no scrollbar. The pager
+		slides .year-chart-inner left/right a page at a time, and
+		swipes are handled in JS, so only vertical panning is left to
+		the browser. */
+  overflow: hidden;
+  touch-action: pan-y;
+  outline: none;
+}
+
+.year-chart:focus-visible {
+  box-shadow: 0 0 0 2px var(--rust);
+  border-radius: 4px;
 }
 
 .year-chart-inner {
@@ -1081,6 +1151,15 @@ footer {
   height: 100%;
   width: max-content;
   position: relative;
+  /* gap is overwritten by the pager so a page fills the width exactly */
+  transition: transform 0.35s cubic-bezier(0.22, 0.61, 0.36, 1);
+  will-change: transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .year-chart-inner {
+    transition: none;
+  }
 }
 
 .year-chart-inner::before {
@@ -1095,6 +1174,7 @@ footer {
 
 .year-col {
   flex: 0 0 34px;
+  min-width: 0;
   display: flex;
   flex-direction: column;
   align-items: center;

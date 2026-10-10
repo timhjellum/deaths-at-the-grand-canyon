@@ -1,6 +1,8 @@
 const path = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
+//const WorkboxWebpackPlugin = require('workbox-webpack-plugin')
+
 
 const isProduction = process.env.NODE_ENV == 'production';
 
@@ -38,11 +40,6 @@ const config = {
 			template: 'contact.html',
 			filename: 'contact.html',
 			chunks: ['pages'],
-		}),
-
-		new HtmlWebpackPlugin({
-			template: 'googlecee6295620a8d037.html',
-			filename: 'googlecee6295620a8d037.html',
 		}),
 	],
 	module: {
