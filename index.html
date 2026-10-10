@@ -84,17 +84,17 @@
 </head>
 
 <body>
-<label class="day-night">
-  <input type="checkbox" checked />
-  <div></div>
-</label>
+    <label class="day-night">
+        <input type="checkbox" checked />
+        <div></div>
+    </label>
 
-<div class="page-shell">
-  <header class="hero">
-    <img src="/grand-canyon.png" alt="" />
-    <div></div>
-  </header>
-  <div class="panel peak-sidebar" aria-label="Browse by decade">
+    <div class="page-shell">
+        <header class="hero">
+            <img src="/grand-canyon.png" alt="" />
+            <div></div>
+        </header>
+        <div class="panel peak-sidebar" aria-label="Browse by decade">
             <div class="peak-sidebar-head">
                 <h2 class="peak-sidebar-title">Decades</h2>
                 <div class="peak-sort" role="group" aria-label="Sort decades">
@@ -103,125 +103,132 @@
                 </div>
             </div>
             <div class="peak-list" id="peakList"></div>
-  </div>
+        </div>
 
         <div class="wrap">
-    <div class="panel peak-dropdown-wrap">
+            <div class="panel peak-dropdown-wrap">
                 <label class="peak-dropdown-label" for="peakDropdown">Decades</label>
                 <select id="peakDropdown" class="peak-dropdown"></select>
             </div>
-    <div class="container">
-      <div class="item-0 panel">
+            <div class="container">
+                <div class="item-0 panel">
 
-                <!--div class="panel masthead-sub">
+                    <!--div class="panel masthead-sub">
                     <p>Grand Canyon National Park draws millions of visitors a year — rim walkers, inner-canyon hikers, river runners, and people flying over it. Some of them don't come home, and the record of who died, and how, is scattered across park reports, newspapers, and old archives.</p>
                     <p>Deaths at the Grand Canyon brings that record together, from 1919 to the present: falls from the rim, heat illness on the trails, drownings on the Colorado River, flash floods, aircraft disasters, and deaths whose cause was never established.</p>
                     <p>Every entry cites its source. This is a research register, not an official census — older years mainly cover non-natural deaths, NPS records are anonymous, and some entries still need independent verification. See <a href="about.html">About</a> for the full scope and limits.</p>
                 </div-->
-        <span class="stat-value" id="statEntries" data-stat="entries">
-          —
-        </span>
-        <br />
-        recorded deaths
-                                </div>
-      <div class="item-1 panel">
-        <span class="stat-value" id="statSpan" data-stat="span">—</span>
-        <br />
-        recorded years
-                            </div>
-      <div class="item-2 panel">
-        <span class="stat-value" id="statIncidents" data-stat="incidents">
-          —
-        </span>
-        <br />
-        separate incidents
-                        </div>
-      <div class="item-3 panel">
-        <span class="stat-value" id="statCause" data-stat="cause">—</span>
-        <br />
-        most common cause
-      </div>
-      <div class="item-4 panel">
-        <span class="stat-value" id="statDeadliest" data-stat="deadliest">
-          —
-        </span>
-        <br />
-        <span id="statDeadliestSub" data-stat="deadliestSub">
-          Deadliest incident
-        </span>
-                    </div>
+                    <span class="stat-value" id="statEntries" data-stat="entries">
+                        —
+                    </span>
+                    <br />
+                    recorded deaths
                 </div>
+                <div class="item-1 panel">
+                    <span class="stat-value" id="statSpan" data-stat="span">—</span>
+                    <br />
+                    recorded years
+                </div>
+                <div class="item-2 panel">
+                    <span class="stat-value" id="statIncidents" data-stat="incidents">
+                        —
+                    </span>
+                    <br />
+                    separate incidents
+                </div>
+                <div class="item-3 panel">
+                    <span class="stat-value" id="statCause" data-stat="cause">—</span>
+                    <br />
+                    most common cause
+                </div>
+                <div class="item-4 panel">
+                    <span class="stat-value" id="statDeadliest" data-stat="deadliest">
+                        —
+                    </span>
+                    <br />
+                    <span id="statDeadliestSub" data-stat="deadliestSub">
+                        Deadliest incident
+                    </span>
+                </div>
+            </div>
 
             <div class="selected" id="selectedPanel" hidden style="margin-top: 1em; margin-bottom: 1em;">
                 <h2 id="selectedName"></h2>
             </div>
 
             <section class="charts">
-      <div class="panel chart-panel cause">
-        <h2 class="panel-title" style="font-size: 0.8em">Cause</h2>
+                <div class="panel chart-panel cause">
+                    <h2 class="panel-title" style="font-size: 0.8em">Cause</h2>
                     <div class="bar-list" id="chartCause"></div>
                 </div>
-      <div class="panel chart-panel age">
-        <h2 class="panel-title" style="font-size: 0.8em">Age</h2>
+                <div class="panel chart-panel age">
+                    <h2 class="panel-title" style="font-size: 0.8em">Age</h2>
                     <div class="bar-list" id="chartAge"></div>
                 </div>
-      <div class="panel chart-panel sex">
-        <h2 class="panel-title" style="font-size: 0.8em">Sex</h2>
+                <div class="panel chart-panel sex">
+                    <h2 class="panel-title" style="font-size: 0.8em">Sex</h2>
                     <div class="bar-list" id="chartGender"></div>
                 </div>
 
-      <div class="panel year-panel">
-        <div class="year-card-head">
-          <h2 class="panel-title" style="font-size: 0.8em">Fatalities by Year</h2>
-          <div class="year-pager" id="yearPager" hidden>
-            <button type="button" class="year-pager-btn" id="yearPrev" aria-label="Show earlier years">
-              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3 5 8l5 5"/></svg>
-            </button>
-            <span class="year-pager-range" id="yearRange" aria-live="polite"></span>
-            <button type="button" class="year-pager-btn" id="yearNext" aria-label="Show later years">
-              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3l5 5-5 5"/></svg>
-            </button>
-          </div>
-        </div>
-        <div class="year-chart" id="chartYear" tabindex="0" role="group" aria-label="Fatalities by year. Use the left and right arrow keys to see other years."></div>
+                <div class="panel year-panel">
+                    <div class="year-card-head">
+                        <h2 class="panel-title" style="font-size: 0.8em">Fatalities by Year</h2>
+                        <div class="year-pager" id="yearPager" hidden>
+                            <button type="button" class="year-pager-btn" id="yearPrev" aria-label="Show earlier years">
+                                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                    <path d="M10 3 5 8l5 5" />
+                                </svg>
+                            </button>
+                            <span class="year-pager-range" id="yearRange" aria-live="polite"></span>
+                            <button type="button" class="year-pager-btn" id="yearNext" aria-label="Show later years">
+                                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                    <path d="M6 3l5 5-5 5" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="year-chart" id="chartYear" tabindex="0" role="group" aria-label="Fatalities by year. Use the left and right arrow keys to see other years."></div>
                 </div>
             </section>
 
-    <section class="panel log">
+            <section class="panel log">
                 <div class="log-toolbar">
-        <h2 class="panel-title">Logged Incidents</h2>
+                    <h2 class="panel-title">Logged Incidents</h2>
                     <span class="count-readout" id="countReadout">Loading…</span>
-<button class="clear-btn" id="clearBtn" disabled>Clear filter</button>
+                    <button class="clear-btn" id="clearBtn" disabled>Clear filter</button>
                 </div>
                 <div class="table-scroll responsive-table">
                     <table>
                         <thead>
                             <tr id="tableHead"></tr>
                         </thead>
-          <tbody id="tableBody">
-            <tr class="status-row">
-              <td colspan="6">Loading incidents…</td>
-            </tr>
-          </tbody>
+                        <tbody id="tableBody">
+                            <tr class="status-row">
+                                <td colspan="6">Loading incidents…</td>
+                            </tr>
+                        </tbody>
                     </table>
                 </div>
                 <div class="log-footer">
-        <button type="button" class="show-more-btn" id="showMoreBtn" hidden>
-          Show more
-        </button>
+                    <button type="button" class="show-more-btn" id="showMoreBtn" hidden>
+                        Show more
+                    </button>
                 </div>
             </section>
 
             <footer>
-                <span>Deaths at the Grand Canyon · <a href="contact.html">Contact</a> · <a href="about.html">About</a></span>
-
-      <div class="panel chart-panel">
-        <h2 class="panel-title" style="font-size: 0.8em">Source</h2>
-        <div class="bar-list" id="chartStatus"></div>
-        </div>
-    </footer>
-  </div>
+                <div>
+                <img class="avatar rounded-2 avatar-user" src="https://avatars.githubusercontent.com/u/1779518?s=400&amp;u=9b5f7e827337e7b28d1c7ae6e1c603ea9fcb2971&amp;v=4" width="100" height="100" alt="@timhjellum">
+                <p>After spending many years near the Grand Canyon, I developed a deep appreciation for both its beauty and its dangers. An Arizona State University graduate, front-end developer, and UX designer, I also spend much of my free time exploring the American Southwest. This site brings those interests together by documenting incidents connected to this remarkable place.</p>
+                
+<div>                
+<span>Deaths at the Grand Canyon · <a href="contact.html">Contact</a> · <a href="about.html">About</a></span><br />
+<!-- https://github.com/timhjellum/... -->
+<span>Sources: <div class="bar-list" id="chartStatus"></div></span>
 </div>
+            </footer>
+        </div>
+    </div>
 </body>
 
 </html>
